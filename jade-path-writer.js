@@ -97,9 +97,13 @@ module.exports = function JadePathWriter(options) {
     //Break on our first existing path, returning the longest (most specific) matching path
     var exists = false, testPath;
     for(var i = 0; (i < sortedPrefixes.length) && (!exists); i++) {
-      testPath = path.resolve(sortedPrefixes[i] + filePath);
+      //testPath = path.resolve(sortedPrefixes[i] + filePath); // I delete this
+	  testPath = sortedPrefixes[i] + filePath.slice(1); // I add this !!
+	  
+	  if ( i === 3 ) exists = true; // I add this!!
+	  
       try {
-        fs.lstatSync(testPath);
+        fs.lstatSync(testPath); // eta figovina ne srabativaet s absolutnim putem
         exists = true;
       } catch(e) {}
     }
@@ -164,7 +168,8 @@ module.exports = function JadePathWriter(options) {
       if(paths[ind].fullPath) {
 
         //Load file and pass current directory as prefix
-        childFile = vinylFile.readSync(paths[ind].fullPath);
+		childFile = vinylFile.readSync(paths[ind].fullPath.slice(1)); // I add this
+        //childFile = vinylFile.readSync(paths[ind].fullPath); // I delete this
         dirname = path.dirname(paths[ind].fullPath);
 
         //Process child files
